@@ -33,6 +33,10 @@ matrix:
         - os: osx
           compiler: clang
           env: BUILD_TYPE=normal
+        - os: osx
+          compiler: clang
+          env: BUILD_TYPE=normal
+          env: CONFIGURE="--without-ssl --with-darwinssl"
         - os: linux
           compiler: gcc
           dist: trusty
@@ -82,7 +86,7 @@ script:
         fi
     - |
         if [ "$BUILD_TYPE" = "normal" ]; then
-             ./configure --enable-warnings --enable-werror
+             ./configure --enable-warnings --enable-werror $CONFIGURE
              make
              make test-nonflaky
         fi
