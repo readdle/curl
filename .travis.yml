@@ -35,8 +35,7 @@ matrix:
           env: BUILD_TYPE=normal
         - os: osx
           compiler: clang
-          env: BUILD_TYPE=normal
-          env: CONFIGURE="--without-ssl --with-darwinssl"
+          env: BUILD_TYPE=normal CONFIGURE="--without-ssl --with-darwinssl"
         - os: linux
           compiler: gcc
           dist: trusty
