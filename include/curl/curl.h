@@ -252,6 +252,10 @@ struct curl_fileinfo {
   size_t b_used;
 };
 
+typedef long (*curl_fileinfo_list_callback)(const struct curl_fileinfo *finf,
+                                            const struct curl_fileinfo *linf,
+                                            void *userptr);
+
 /* return codes for CURLOPT_CHUNK_BGN_FUNCTION */
 #define CURL_CHUNK_BGN_FUNC_OK      0
 #define CURL_CHUNK_BGN_FUNC_FAIL    1 /* tell the lib to end the task */
@@ -960,6 +964,7 @@ typedef enum {
   CINIT(UPLOAD, LONG, 46),       /* this is an upload */
   CINIT(POST, LONG, 47),         /* HTTP POST method */
   CINIT(DIRLISTONLY, LONG, 48),  /* bare names when listing directories */
+  CINIT(DIRLISTFILES, LONG, 49),
 
   CINIT(APPEND, LONG, 50),       /* Append instead of overwrite on upload! */
 
@@ -1535,6 +1540,8 @@ typedef enum {
 
   /* set the SMTP auth originator */
   CINIT(MAIL_AUTH, OBJECTPOINT, 217),
+
+  CINIT(DIRLISTFILES_CALLBACK, FUNCTIONPOINT, 218),
 
   CURLOPT_LASTENTRY /* the last unused */
 } CURLoption;

@@ -795,6 +795,12 @@ CURLcode Curl_setopt(struct SessionHandle *data, CURLoption option,
      */
     data->set.ftp_list_only = (0 != va_arg(param, long))?TRUE:FALSE;
     break;
+  case CURLOPT_DIRLISTFILES:
+    data->set.ftp_list_files = (0 != va_arg(param, long))?TRUE:FALSE;
+    break;
+  case CURLOPT_DIRLISTFILES_CALLBACK:
+    data->set.ftp_fileinfo_list_callback = va_arg(param, void *);
+    break;
   case CURLOPT_APPEND:
     /*
      * We want to upload and append to an existing file.

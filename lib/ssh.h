@@ -74,6 +74,8 @@ typedef enum {
   SSH_SFTP_READDIR_INIT,
   SSH_SFTP_READDIR,
   SSH_SFTP_READDIR_LINK,
+  SSH_SFTP_READDIR_LINK_REALPATH,
+  SSH_SFTP_READDIR_LINK_STAT,
   SSH_SFTP_READDIR_BOTTOM,
   SSH_SFTP_READDIR_DONE,
   SSH_SFTP_DOWNLOAD_INIT,
@@ -130,6 +132,8 @@ struct ssh_conn {
   int readdir_len, readdir_totalLen, readdir_currLen;
   char *readdir_line;
   char *readdir_linkPath;
+  struct curl_fileinfo * readdir_fileinfo;
+  struct curl_fileinfo * readdir_link_fileinfo;
   /* end of READDIR stuff */
 
   int secondCreateDirs;         /* counter use by the code to see if the

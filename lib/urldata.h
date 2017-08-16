@@ -1510,6 +1510,8 @@ struct UserDefined {
   bool prefer_ascii;     /* ASCII rather than binary */
   bool ftp_append;       /* append, not overwrite, on upload */
   bool ftp_list_only;    /* switch FTP command for listing directories */
+  bool ftp_list_files;
+  curl_fileinfo_list_callback ftp_fileinfo_list_callback;
   bool ftp_use_port;     /* use the FTP PORT command */
   bool hide_progress;    /* don't use the progress meter */
   bool http_fail_on_error;  /* fail on HTTP error codes >= 300 */
