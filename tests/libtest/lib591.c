@@ -9,7 +9,7 @@
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
- * are also available at http://curl.haxx.se/docs/copyright.html.
+ * are also available at https://curl.haxx.se/docs/copyright.html.
  *
  * You may opt to use, copy, modify, merge, publish, distribute and/or sell
  * copies of the Software, and permit persons to whom the Software is
@@ -44,15 +44,13 @@ int test(char *URL)
   int msgs_left;
   CURLMsg *msg;
   FILE *upload = NULL;
-  int error;
 
   start_test_timing();
 
   upload = fopen(libtest_arg3, "rb");
   if(!upload) {
-    error = ERRNO;
     fprintf(stderr, "fopen() failed with error: %d (%s)\n",
-            error, strerror(error));
+            errno, strerror(errno));
     fprintf(stderr, "Error opening file: (%s)\n", libtest_arg3);
     return TEST_ERR_FOPEN;
   }
