@@ -2930,6 +2930,9 @@ static CURLcode ftp_statemach_act(struct connectdata *conn)
       if((ftpcode >= 400) && !ftpc->count2) {
         /* failure response code, and not allowed to fail */
         failf(conn->data, "QUOT command failed with %03d", ftpcode);
+        if(ftpcode == 550) {
+          return CURLE_REMOTE_ACCESS_DENIED;
+        }
         return CURLE_QUOTE_ERROR;
       }
       result = ftp_state_quote(conn, FALSE, ftpc->state);
