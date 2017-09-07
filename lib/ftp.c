@@ -1796,7 +1796,9 @@ static char *control_address(struct connectdata *conn)
   if(conn->bits.tunnel_proxy || conn->bits.socksproxy)
     return conn->host.name;
 
-  return conn->ip_addr_str;
+    if (conn->bits.ipv6)
+        return conn->host.name;
+    return conn->ip_addr_str;
 }
 
 static CURLcode ftp_state_pasv_resp(struct connectdata *conn,
