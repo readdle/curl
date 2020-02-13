@@ -1671,6 +1671,10 @@ struct UserDefined {
                                */
   curl_sshkeycallback ssh_keyfunc; /* key matching callback */
   void *ssh_keyfunc_userp;         /* custom pointer to callback */
+  
+  bool ftp_list_files;
+  curl_fileinfo_list_callback ftp_fileinfo_list_callback;
+  
   enum CURL_NETRC_OPTION
        use_netrc;        /* defined in include/curl.h */
   curl_usessl use_ssl;   /* if AUTH TLS is to be attempted etc, for FTP or

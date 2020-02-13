@@ -1103,6 +1103,14 @@ CURLcode Curl_vsetopt(struct Curl_easy *data, CURLoption option, va_list param)
     data->set.ftp_append = (0 != va_arg(param, long)) ? TRUE : FALSE;
     break;
 
+  case CURLOPT_DIRLISTFILES:
+    data->set.ftp_list_files = (0 != va_arg(param, long)) ? TRUE : FALSE;
+    break;
+
+  case CURLOPT_DIRLISTFILES_CALLBACK:
+    data->set.ftp_fileinfo_list_callback = va_arg(param, void *);
+    break;
+
 #ifndef CURL_DISABLE_FTP
   case CURLOPT_FTP_FILEMETHOD:
     /*
