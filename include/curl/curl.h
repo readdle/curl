@@ -893,6 +893,12 @@ typedef enum {
   CURLFTPMETHOD_SINGLECWD, /* one CWD to full dir, then work on file */
   CURLFTPMETHOD_LAST       /* not an option, never use */
 } curl_ftpmethod;
+    
+typedef enum {
+  CURLFTP_SKIP_PASV_IP_NEVER,
+  CURLFTP_SKIP_PASV_IP_ALWAYS,
+  CURLFTP_SKIP_PASV_IP_IF_PRIVATE
+} curl_skippasvip;
 
 /* bitmask defines for CURLOPT_HEADEROPT */
 #define CURLHEADER_UNIFIED  0

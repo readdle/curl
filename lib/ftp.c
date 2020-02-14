@@ -1786,6 +1786,19 @@ static CURLcode ftp_epsv_disable(struct connectdata *conn)
   return result;
 }
 
+static bool ftp_ip_is_private(int *ip) {
+  // 127.x.x.x localhost
+  // 10.x.x.x private
+  // 169.254.x.x link local
+  // 172.16.x.x - 172.31.x.x private
+  // 192.168.x.x private
+  if (ip[0] == 127 || ip[0] == 10 ||
+      (ip[0] == 169 && ip[1] == 254) ||
+      (ip[0] == 172 && ip[1]/16 == 1) ||
+      (ip[0] == 192 && ip[1] == 168))
+    return true;
+  return false;
+}
 
 static char *control_address(struct connectdata *conn)
 {
@@ -1889,7 +1902,8 @@ static CURLcode ftp_state_pasv_resp(struct connectdata *conn,
     }
 
     /* we got OK from server */
-    if(data->set.ftp_skip_ip) {
+    if(data->set.ftp_skip_ip == CURLFTP_SKIP_PASV_IP_ALWAYS ||
+       (data->set.ftp_skip_ip == CURLFTP_SKIP_PASV_IP_IF_PRIVATE && ftp_ip_is_private(ip))) {
       /* told to ignore the remotely given IP but instead use the host we used
          for the control connection */
       infof(data, "Skip %u.%u.%u.%u for data connection, re-use %s instead\n",

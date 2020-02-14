@@ -1679,6 +1679,8 @@ struct UserDefined {
        use_netrc;        /* defined in include/curl.h */
   curl_usessl use_ssl;   /* if AUTH TLS is to be attempted etc, for FTP or
                             IMAP or POP3 or others! */
+  long ftp_skip_ip;      /* skip the IP address the FTP server passes on to
+                            us */
   long new_file_perms;    /* Permissions to use when creating remote files */
   long new_directory_perms; /* Permissions to use when creating remote dirs */
   long ssh_auth_types;   /* allowed SSH auth types */
@@ -1744,8 +1746,6 @@ struct UserDefined {
   BIT(ftp_use_epsv);     /* if EPSV is to be attempted or not */
   BIT(ftp_use_eprt);     /* if EPRT is to be attempted or not */
   BIT(ftp_use_pret);     /* if PRET is to be used before PASV or not */
-  BIT(ftp_skip_ip);      /* skip the IP address the FTP server passes on to
-                            us */
 #endif
   BIT(hide_progress);    /* don't use the progress meter */
   BIT(http_fail_on_error);  /* fail on HTTP error codes >= 400 */
