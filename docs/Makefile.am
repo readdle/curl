@@ -5,11 +5,11 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -18,69 +18,124 @@
 # This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
 # KIND, either express or implied.
 #
+# SPDX-License-Identifier: curl
+#
 ###########################################################################
 
 AUTOMAKE_OPTIONS = foreign no-dependencies
 
-# EXTRA_DIST breaks with $(abs_builddir) so build it using this variable
-# but distribute it (using the relative file name) in the next variable
-man_MANS = $(abs_builddir)/curl.1
-noinst_man_MANS = curl.1 mk-ca-bundle.1
-dist_man_MANS = curl-config.1
-GENHTMLPAGES = curl.html curl-config.html mk-ca-bundle.html
-PDFPAGES = curl.pdf curl-config.pdf mk-ca-bundle.pdf
-MANDISTPAGES = curl.1.dist curl-config.1.dist
+if BUILD_DOCS
+# if we disable man page building, ignore these
+MK_CA_DOCS = mk-ca-bundle.1
+CURLCONF_DOCS = curl-config.1
+man_MANS = curl-config.1 wcurl.1
+endif
 
-HTMLPAGES = $(GENHTMLPAGES) index.html
+CURLPAGES = curl-config.md mk-ca-bundle.md wcurl.md
 
-# Build targets in this file (.) before cmdline-opts to ensure that
-# the curl.1 rule below runs first
-SUBDIRS = . cmdline-opts
-DIST_SUBDIRS = $(SUBDIRS) examples libcurl
+SUBDIRS = . cmdline-opts libcurl
+DIST_SUBDIRS = $(SUBDIRS) examples
 
-CLEANFILES = $(GENHTMLPAGES) $(PDFPAGES) $(MANDISTPAGES) curl.1
+if BUILD_DOCS
+CLEANFILES = mk-ca-bundle.1 curl-config.1 wcurl.1
+endif
 
-EXTRA_DIST = MANUAL BUGS CONTRIBUTE.md FAQ FEATURES INTERNALS.md SSLCERTS.md    \
- README.win32 RESOURCES TODO TheArtOfHttpScripting THANKS VERSIONS KNOWN_BUGS   \
- BINDINGS.md HISTORY.md INSTALL INSTALL.md LICENSE-MIXING.md     \
- README.netware MAIL-ETIQUETTE HTTP-COOKIES.md SECURITY.md RELEASE-PROCEDURE    \
- SSL-PROBLEMS.md HTTP2.md ROADMAP.md CODE_OF_CONDUCT.md CODE_STYLE.md           \
- CHECKSRC.md CMakeLists.txt README.md CIPHERS.md INSTALL.cmake README.cmake     \
- $(noinst_man_MANS) HELP-US.md
+INTERNALDOCS =                                  \
+ internals/BUFQ.md                              \
+ internals/BUFREF.md                            \
+ internals/CHECKSRC.md                          \
+ internals/CLIENT-READERS.md                    \
+ internals/CLIENT-WRITERS.md                    \
+ internals/CODE_STYLE.md                        \
+ internals/CONNECTION-FILTERS.md                \
+ internals/CURLX.md                             \
+ internals/DYNBUF.md                            \
+ internals/HASH.md                              \
+ internals/LLIST.md                             \
+ internals/MID.md                               \
+ internals/MQTT.md                              \
+ internals/MULTI-EV.md                          \
+ internals/NEW-PROTOCOL.md                      \
+ internals/PORTING.md                           \
+ internals/README.md                            \
+ internals/SPLAY.md                             \
+ internals/STRPARSE.md                          \
+ internals/TLS-SESSIONS.md                      \
+ internals/UINT_SETS.md                         \
+ internals/WEBSOCKET.md
 
-MAN2HTML= roffit $< >$@
+EXTRA_DIST =                                    \
+ $(CURLPAGES)                                   \
+ $(INTERNALDOCS)                                \
+ ALTSVC.md                                      \
+ BINDINGS.md                                    \
+ BUG-BOUNTY.md                                  \
+ BUGS.md                                        \
+ CIPHERS.md                                     \
+ CIPHERS-TLS12.md                               \
+ CMakeLists.txt                                 \
+ CODE_OF_CONDUCT.md                             \
+ CODE_REVIEW.md                                 \
+ CONTRIBUTE.md                                  \
+ CURL-DISABLE.md                                \
+ CURLDOWN.md                                    \
+ DEPRECATE.md                                   \
+ DISTROS.md                                     \
+ EARLY-RELEASE.md                               \
+ ECH.md                                         \
+ EXPERIMENTAL.md                                \
+ FAQ                                            \
+ FEATURES.md                                    \
+ GOVERNANCE.md                                  \
+ HELP-US.md                                     \
+ HISTORY.md                                     \
+ HSTS.md                                        \
+ HTTP-COOKIES.md                                \
+ HTTP3.md                                       \
+ HTTPSRR.md                                     \
+ INFRASTRUCTURE.md                              \
+ INSTALL                                        \
+ INSTALL-CMAKE.md                               \
+ INSTALL.md                                     \
+ INTERNALS.md                                   \
+ IPFS.md                                        \
+ KNOWN_BUGS                                     \
+ MAIL-ETIQUETTE.md                              \
+ MANUAL.md                                      \
+ options-in-versions                            \
+ README.md                                      \
+ RELEASE-PROCEDURE.md                           \
+ RUSTLS.md                                      \
+ ROADMAP.md                                     \
+ SECURITY-ADVISORY.md                           \
+ SPONSORS.md                                    \
+ SSL-PROBLEMS.md                                \
+ SSLCERTS.md                                    \
+ THANKS TODO                                    \
+ TheArtOfHttpScripting.md                       \
+ URL-SYNTAX.md                                  \
+ VERSIONS.md                                    \
+ VULN-DISCLOSURE-POLICY.md
 
-SUFFIXES = .1 .html .pdf
+CD2NROFF = $(top_srcdir)/scripts/cd2nroff $< >$@
 
-# $(abs_builddir) is to disable VPATH when searching for this file, which
-# would otherwise find the copy in $(srcdir) which breaks the $(HUGE)
-# rule in src/Makefile.am in out-of-tree builds that references the file in the
-# build directory.
-#
-# First, seed the used copy of curl.1 with the prebuilt copy (in an out-of-tree
-# build), then run make recursively to rebuild it only if its dependencies
-# have changed.
-$(abs_builddir)/curl.1:
-	if test "$(top_builddir)x" != "$(top_srcdir)x" -a -e "$(srcdir)/curl.1"; then \
-		cp -fp "$(srcdir)/curl.1" $@; fi
-	cd cmdline-opts && $(MAKE)
+CD2 = $(CD2_$(V))
+CD2_0 = @echo "  RENDER " $@;
+CD2_1 =
+CD2_ = $(CD2_0)
 
-html: $(HTMLPAGES)
-	cd libcurl && $(MAKE) html
+SUFFIXES = .1 .md
 
-pdf: $(PDFPAGES)
-	cd libcurl && $(MAKE) pdf
+all: $(MK_CA_DOCS) $(CURLCONF_DOCS)
 
-.1.html:
-	$(MAN2HTML)
+.md.1:
+	$(CD2)$(CD2NROFF)
 
-.1.pdf:
-	@(foo=`echo $@ | sed -e 's/\.[0-9]$$//g'`; \
-	groff -Tps -man $< >$$foo.ps; \
-	ps2pdf $$foo.ps $@; \
-	rm $$foo.ps; \
-	echo "converted $< to $@")
+curl-config.1: curl-config.md
+
+mk-ca-bundle.1: mk-ca-bundle.md
+
+wcurl.1: wcurl.md
 
 distclean:
 	rm -f $(CLEANFILES)
-

@@ -1,41 +1,57 @@
 <testcase>
 <info>
 <keywords>
-FILE
+HTTPS
+HTTP GET
+PEM certificate
 </keywords>
-</info>
+</info>type
 
+#
+# Server-side
 <reply>
 <data>
-foo
-   bar
-bar
-   foo
-moo
+HTTP/1.1 200 OK
+Date: Tue, 09 Nov 2010 14:49:00 GMT
+Server: test-server/fake
+Content-Length: 7
+
+MooMoo
 </data>
 </reply>
 
+#
 # Client-side
 <client>
+<features>
+SSL
+Schannel
+local-http
+</features>
 <server>
-file
+https test-localhost.pem
 </server>
- <name>
-basic file:// file with no authority
- </name>
- <command>
-file:%PWD/log/test2070.txt
+<name>
+Ignore certificate revocation "best effort" strategy
+</name>
+  <setenv>
+# This test is pointless if we are not using the Schannel backend
+CURL_SSL_BACKEND=schannel
+ </setenv>
+<command>
+-4 --cacert %CERTDIR/certs/test-ca.crt --ssl-revoke-best-effort https://localhost:%HTTPSPORT/%TESTNUMBER
 </command>
-<file name="log/test2070.txt">
-foo
-   bar
-bar
-   foo
-moo
-</file>
 </client>
 
+#
 # Verify data after the test has been "shot"
 <verify>
+<protocol>
+GET /%TESTNUMBER HTTP/1.1
+Host: localhost:%HTTPSPORT
+User-Agent: curl/%VERSION
+Accept: */*
+
+</protocol>
 </verify>
 </testcase>
